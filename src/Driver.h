@@ -194,7 +194,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     // Formato dinámico con nombre de las variables
     std::string fmt;
     if (val->getType()->isDoubleTy()) {
-      fmt = name + ": %f\n";
+      fmt = name + ": %g\n";
     } else {
       fmt = name + ": %d\n";
     }
@@ -230,7 +230,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     // Crear formato dinámico con nombre
     std::string fmt;
     if (val->getType()->isDoubleTy()) {
-        fmt = name + ": %f\n";
+        fmt = name + ": %g\n";
     } else {
         fmt = name + ": %d\n";
     }
@@ -590,7 +590,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
   void printResult(const std::string &label, Value *val,
                    const std::string &unit = "") {
     // Crear formato string: "label: %f unit\n"
-    std::string fmt = label + ": %f " + unit + "\n";
+    std::string fmt = label + ": %g " + unit + "\n";
     
     Value *fmtStr = builder->CreateGlobalString(fmt, "fmt_res");
 
