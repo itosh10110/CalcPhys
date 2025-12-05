@@ -10,6 +10,16 @@ statement
 expr
   : fisExpr # ExprFis
   | matExpr # ExprMat
+  | printExpr # ExprPrint
+  | stringExpr # ExprString
+  ;
+
+printExpr
+  : 'ppp' '(' (expr | STRING)+ ')' #thePrintExpr
+  ;
+
+stringExpr
+  : STRING # theStringExpr
   ;
 
 fisExpr
@@ -82,9 +92,11 @@ TG: 'tg' ;
 SEC: 'sec' ;
 CSC: 'csc' ;
 CTG: 'ctg' ;
+PRINT: 'ppp' ;
 
 // Lexer
 ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 INT: [+-]?[0-9]+ ;
 FLOAT: [+-]?[0-9]+'.'[0-9]+ ;
+STRING: '"' ~["]* '"' ;
 WS: [ \t\n\r]+ -> skip ;

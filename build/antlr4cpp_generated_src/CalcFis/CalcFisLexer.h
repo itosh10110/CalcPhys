@@ -1,5 +1,5 @@
 
-// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/src/CalcFis.g4 by ANTLR 4.13.2
+// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/CalcPhys/src/CalcFis.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -16,7 +16,7 @@ public:
     T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, ADD = 14, 
     SUB = 15, MUL = 16, DIV = 17, POW = 18, MOD = 19, LOG = 20, ROOT = 21, 
     LPAR = 22, RPAR = 23, COS = 24, SEN = 25, TG = 26, SEC = 27, CSC = 28, 
-    CTG = 29, ID = 30, INT = 31, FLOAT = 32, WS = 33
+    CTG = 29, PRINT = 30, ID = 31, INT = 32, FLOAT = 33, STRING = 34, WS = 35
   };
 
   explicit CalcFisLexer(antlr4::CharStream *input);

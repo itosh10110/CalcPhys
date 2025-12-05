@@ -1,5 +1,5 @@
 
-// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/src/CalcFis.g4 by ANTLR 4.13.2
+// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/CalcPhys/src/CalcFis.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -32,6 +32,22 @@ public:
   }
 
   virtual std::any visitExprMat(CalcFisParser::ExprMatContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExprPrint(CalcFisParser::ExprPrintContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitExprString(CalcFisParser::ExprStringContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitThePrintExpr(CalcFisParser::ThePrintExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitTheStringExpr(CalcFisParser::TheStringExprContext *ctx) override {
     return visitChildren(ctx);
   }
 

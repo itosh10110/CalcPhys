@@ -1,5 +1,5 @@
 
-// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/src/CalcFis.g4 by ANTLR 4.13.2
+// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/CalcPhys/src/CalcFis.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -28,6 +28,14 @@ public:
     virtual std::any visitExprFis(CalcFisParser::ExprFisContext *context) = 0;
 
     virtual std::any visitExprMat(CalcFisParser::ExprMatContext *context) = 0;
+
+    virtual std::any visitExprPrint(CalcFisParser::ExprPrintContext *context) = 0;
+
+    virtual std::any visitExprString(CalcFisParser::ExprStringContext *context) = 0;
+
+    virtual std::any visitThePrintExpr(CalcFisParser::ThePrintExprContext *context) = 0;
+
+    virtual std::any visitTheStringExpr(CalcFisParser::TheStringExprContext *context) = 0;
 
     virtual std::any visitOperPars(CalcFisParser::OperParsContext *context) = 0;
 

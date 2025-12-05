@@ -1,5 +1,5 @@
 
-// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/src/CalcFis.g4 by ANTLR 4.13.2
+// Generated from /mnt/c/Users/Mauricio/Documents/SEXTO CICLO/Compiladores/TF/CalcPhys/src/CalcFis.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -16,12 +16,13 @@ public:
     T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, ADD = 14, 
     SUB = 15, MUL = 16, DIV = 17, POW = 18, MOD = 19, LOG = 20, ROOT = 21, 
     LPAR = 22, RPAR = 23, COS = 24, SEN = 25, TG = 26, SEC = 27, CSC = 28, 
-    CTG = 29, ID = 30, INT = 31, FLOAT = 32, WS = 33
+    CTG = 29, PRINT = 30, ID = 31, INT = 32, FLOAT = 33, STRING = 34, WS = 35
   };
 
   enum {
-    RuleProg = 0, RuleStatement = 1, RuleExpr = 2, RuleFisExpr = 3, RuleOper = 4, 
-    RulePars = 5, RulePar = 6, RuleMatExpr = 7, RuleFun = 8, RuleNum = 9
+    RuleProg = 0, RuleStatement = 1, RuleExpr = 2, RulePrintExpr = 3, RuleStringExpr = 4, 
+    RuleFisExpr = 5, RuleOper = 6, RulePars = 7, RulePar = 8, RuleMatExpr = 9, 
+    RuleFun = 10, RuleNum = 11
   };
 
   explicit CalcFisParser(antlr4::TokenStream *input);
@@ -44,6 +45,8 @@ public:
   class ProgContext;
   class StatementContext;
   class ExprContext;
+  class PrintExprContext;
+  class StringExprContext;
   class FisExprContext;
   class OperContext;
   class ParsContext;
@@ -114,6 +117,24 @@ public:
    
   };
 
+  class  ExprStringContext : public ExprContext {
+  public:
+    ExprStringContext(ExprContext *ctx);
+
+    StringExprContext *stringExpr();
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprPrintContext : public ExprContext {
+  public:
+    ExprPrintContext(ExprContext *ctx);
+
+    PrintExprContext *printExpr();
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  ExprFisContext : public ExprContext {
   public:
     ExprFisContext(ExprContext *ctx);
@@ -133,6 +154,60 @@ public:
   };
 
   ExprContext* expr();
+
+  class  PrintExprContext : public antlr4::ParserRuleContext {
+  public:
+    PrintExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    PrintExprContext() = default;
+    void copyFrom(PrintExprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  ThePrintExprContext : public PrintExprContext {
+  public:
+    ThePrintExprContext(PrintExprContext *ctx);
+
+    antlr4::tree::TerminalNode *PRINT();
+    antlr4::tree::TerminalNode *LPAR();
+    antlr4::tree::TerminalNode *RPAR();
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> STRING();
+    antlr4::tree::TerminalNode* STRING(size_t i);
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  PrintExprContext* printExpr();
+
+  class  StringExprContext : public antlr4::ParserRuleContext {
+  public:
+    StringExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    StringExprContext() = default;
+    void copyFrom(StringExprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  TheStringExprContext : public StringExprContext {
+  public:
+    TheStringExprContext(StringExprContext *ctx);
+
+    antlr4::tree::TerminalNode *STRING();
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  StringExprContext* stringExpr();
 
   class  FisExprContext : public antlr4::ParserRuleContext {
   public:
