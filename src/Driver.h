@@ -625,9 +625,9 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       return res;
     }
 
-    if (d) return d;
+    /*if (d) return d;
     if (v) return v;
-    if (t) return t;
+    if (t) return t;*/
 
     std::cerr << "Variables insuficientes para MRU" << std::endl;
     return (Value *)nullptr;
@@ -688,10 +688,10 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       return res;
     }
 
-    if (h) return h;
+    /*if (h) return h;
     if (vi) return vi;
     if (vf) return vf;
-    if (t) return t;
+    if (t) return t;*/
 
     std::cerr << "Variables insuficientes para caida libre" << std::endl;
     return (Value *)nullptr;
@@ -766,12 +766,12 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       return res;
     }
 
-    if (x0) return x0;
+    /*if (x0) return x0;
     if (xf) return xf;
     if (v0) return v0;
     if (vf) return vf;
     if (t) return t;
-    if (a) return a;
+    if (a) return a;*/
 
     std::cerr << "Variables insuficientes para MRUV" << std::endl;
     return (Value *)nullptr;
@@ -904,14 +904,14 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns en caso de variables insuficientes, aunque aún pued calcularse la incógnita
-    if (f) return f;
+    /*if (f) return f;
     if (d) return d;
     if (w) return w;
     if (v) return v;
     if (t) return t;
     if (m) return m;
     if (p) return p;
-    if (a) return a;
+    if (a) return a;*/
 
     std::cerr << "Variables insuficientes para Trabajo Mecánico" << std::endl;
     return (Value *)nullptr;
@@ -1015,12 +1015,12 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns para concatenar en caso no se encuentre solución inmediata
-    if (m1) return m1;
+    /*if (m1) return m1;
     if (m2) return m2;
     if (rad) return rad;
     if (v) return v;
     if (F) return F;
-    if (T) return T;
+    if (T) return T;*/
 
     std::cerr << "Variables insuficientes para Mecánica Celeste" << std::endl;
     return (Value *)nullptr;
@@ -1262,7 +1262,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns en caso de no encontrar solución
-    if (A) return A;
+    /*if (A) return A;
     if (f) return f;
     if (t) return t;
     if (w) return w;
@@ -1275,7 +1275,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     if (Ep) return Ep;
     if (Ec) return Ec;
     if (Em) return Em;
-    if (phi) return phi;
+    if (phi) return phi;*/
 
     std::cerr << "Variables insuficientes para MAS" << std::endl;
     return (Value *)nullptr;
@@ -1326,13 +1326,13 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns en caso de no encontrar solución
-    if (v) return v;
+    /*if (v) return v;
     if (d) return d;
     if (P) return P;
     if (h) return h;
     if (A) return A;
     if (Q) return Q;
-    if (F) return F;
+    if (F) return F;*/
 
     std::cerr << "Variables insuficientes para Fluidos" << std::endl;
     return (Value *)nullptr;
@@ -1397,14 +1397,14 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns en caso de no encontrar solución
-    if (rad) return rad;
+    /*if (rad) return rad;
     if (v) return v;
     if (m) return m;
     if (F) return F;
     if (f) return f;
     if (a) return a;
     if (w) return w;
-    if (T) return T;
+    if (T) return T;*/
 
     std::cerr << "Variables insuficientes para MCU" << std::endl;
     return (Value *)nullptr;
@@ -1478,7 +1478,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns en caso de no encontrar solución
-    if (h) return h;
+    /*if (h) return h;
     if (v) return v;
     if (m) return m;
     if (a) return a;
@@ -1487,7 +1487,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     if (F) return F;
     if (Ec) return Ec;
     if (Ep) return Ep;
-    if (Em) return Em;
+    if (Em) return Em;*/
 
     std::cerr << "Variables insuficientes para Energía Mecánica" << std::endl;
     return (Value *)nullptr;
@@ -1654,7 +1654,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     }
 
     // Returns para concatenar más operaciones eléctricas si es necesario
-    if (E) return E;
+    /*if (E) return E;
     if (V) return V;
     if (I) return I;
     if (R) return R;
@@ -1664,7 +1664,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     if (d) return d;
     if (q1) return q1;
     if (q2) return q2;
-    if (q) return q;
+    if (q) return q;*/
 
     std::cerr << "Variables insuficientes para Electromagnetismo" << std::endl;
     return (Value *)nullptr;
