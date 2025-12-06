@@ -1094,7 +1094,56 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       Value *res = builder->CreateFDiv(one, T, "calc_f");
       printResult("Frecuencia", res, "Hz");
       return res;
-    } else if (!x && A && w && t) {
+    } 
+    // Para hallar amplitud A
+    else if (!A && x && w && t) {
+      // A = x / cos(w*t + phi)
+      Value *arg = builder->CreateFAdd(builder->CreateFMul(w, t), phi);
+      Function *cosFunc = Intrinsic::getDeclaration(
+          module.get(), Intrinsic::cos, {Type::getDoubleTy(context)});
+      Value *cosVal = builder->CreateCall(cosFunc, {arg});
+      Value *res = builder->CreateFDiv(x, cosVal, "calc_A");
+      printResult("Amplitud A", res, "m");
+      return res;
+    }
+    // Para hallar posición x, velocidad v o aceleración a
+    else if (!x && A && f && t) {
+      // x = A * cos(2pi*f*t + phi)
+      Value *arg = builder->CreateFAdd(
+          builder->CreateFMul(TwoPi, builder->CreateFMul(f, t)), phi);
+      Function *cosFunc = Intrinsic::getDeclaration(
+          module.get(), Intrinsic::cos, {Type::getDoubleTy(context)});
+      Value *cosVal = builder->CreateCall(cosFunc, {arg});
+      Value *res = builder->CreateFMul(A, cosVal, "calc_x");
+      printResult("Posición x(t)", res, "m");
+      return res;
+    } else if (!v && A && f && t) {
+      // v = -A * 2pi * f * sin(2pi*f*t + phi)
+      Value *arg = builder->CreateFAdd(
+          builder->CreateFMul(TwoPi, builder->CreateFMul(f, t)), phi);
+      Function *sinFunc = Intrinsic::getDeclaration(
+          module.get(), Intrinsic::sin, {Type::getDoubleTy(context)});
+      Value *sinVal = builder->CreateCall(sinFunc, {arg});
+      Value *negA2pif = builder->CreateFNeg(
+          builder->CreateFMul(A, builder->CreateFMul(TwoPi, f)));
+      Value *res = builder->CreateFMul(negA2pif, sinVal, "calc_v");
+      printResult("Velocidad v(t)", res, "m/s");
+      return res;
+    } else if (!a && A && f && t) {
+      // a = -A * (2pi*f)^2 * cos(2pi*f*t + phi)
+      Value *arg = builder->CreateFAdd(
+          builder->CreateFMul(TwoPi, builder->CreateFMul(f, t)), phi);
+      Function *cosFunc = Intrinsic::getDeclaration(
+          module.get(), Intrinsic::cos, {Type::getDoubleTy(context)});
+      Value *cosVal = builder->CreateCall(cosFunc, {arg});
+      Value *twoPif = builder->CreateFMul(TwoPi, f);
+      Value *twoPif2 = builder->CreateFMul(twoPif, twoPif);
+      Value *negA2pif2 =
+          builder->CreateFNeg(builder->CreateFMul(A, twoPif2));
+      Value *res = builder->CreateFMul(negA2pif2, cosVal, "calc_a");
+      printResult("Aceleración a(t)", res, "m/s^2");
+    }
+    else if (!x && A && w && t) {
       // x = A * cos(w*t + phi)
       Value *arg = builder->CreateFAdd(builder->CreateFMul(w, t), phi);
       Function *cosFunc = Intrinsic::getDeclaration(
@@ -1149,6 +1198,66 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     } else if (!Em && Ep && Ec) {
       Value *res = builder->CreateFAdd(Ep, Ec, "calc_Em");
       printResult("Energía mecánica", res, "J");
+      return res;
+    }
+    // Para hallar w en función de k y m
+    else if (!w && k && m) {
+      // w = sqrt(k/m)
+      Value *frac = builder->CreateFDiv(k, m);
+      Function *sqrtFunc = Intrinsic::getOrInsertDeclaration(
+          module.get(), Intrinsic::sqrt, {Type::getDoubleTy(context)});
+      Value *res = builder->CreateCall(sqrtFunc, {frac}, "calc_w");
+      printResult("Velocidad angular", res, "rad/s");
+      return res;
+    }
+    else if (!m && k && w) {
+      // m = k / w^2
+      Value *w2 = builder->CreateFMul(w, w);
+      Value *res = builder->CreateFDiv(k, w2, "calc_m");
+      printResult("Masa", res, "kg");
+      return res;
+    }
+    else if (!k && m && w) {
+      // k = m * w^2
+      Value *w2 = builder->CreateFMul(w, w);
+      Value *res = builder->CreateFMul(m, w2, "calc_k");
+      printResult("Constante de resorte", res, "N/m");
+      return res;
+    }
+    else if (!T && w) {
+      // T = 2pi / w
+      Value *res = builder->CreateFDiv(TwoPi, w, "calc_T");
+      printResult("Periodo", res, "s");
+      return res;
+    }
+    else if (!w && T) {
+      // w = 2pi / T
+      Value *res = builder->CreateFDiv(TwoPi, T, "calc_w");
+      printResult("Velocidad angular", res, "rad/s");
+      return res;
+    }
+    // Para hallar phi
+    else if (!phi && x && A && w && t) {
+      // phi = arccos(x / A) - w*t
+      Value *x_over_A = builder->CreateFDiv(x, A);
+      Function *acosFunc = Intrinsic::getDeclaration(
+          module.get(), Intrinsic::acos, {Type::getDoubleTy(context)});
+      Value *acosVal = builder->CreateCall(acosFunc, {x_over_A});
+      Value *wt = builder->CreateFMul(w, t);
+      Value *res = builder->CreateFSub(acosVal, wt, "calc_phi");
+      printResult("Fase inicial phi", res, "rad");
+      return res;
+    }
+    else if (!phi && v && A && f && t) {
+      // phi = arcsin(-v / (A * 2pi * f)) - 2pi*f*t
+      Value *A2pif = builder->CreateFMul(A, builder->CreateFMul(TwoPi, f));
+      Value *neg_v_over_A2pif = builder->CreateFNeg(builder->CreateFDiv(v, A2pif));
+      Function *asinFunc = Intrinsic::getDeclaration(
+          module.get(), Intrinsic::asin, {Type::getDoubleTy(context)});
+      Value *asinVal = builder->CreateCall(asinFunc, {neg_v_over_A2pif});
+      Value *twoPif_t = builder->CreateFMul(TwoPi, builder->CreateFMul(f, t));
+      Value *res = builder->CreateFSub(asinVal, twoPif_t, "calc_phi");
+      printResult("Fase inicial phi", res, "rad");
       return res;
     }
 
