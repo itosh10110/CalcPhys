@@ -857,6 +857,51 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Trabajo (Ec)", res, "J");
       return res;
     }
+    // Para momento p = m * v
+    else if (!p && f && t) {
+      // p = f * t
+      Value *res = builder->CreateFMul(f, t, "calc_p_ft");
+      printResult("Momento lineal", res, "N*m");
+      return res;
+    }
+    else if (!p && a && t && m) {
+      // p = m * a * t
+      Value *at = builder->CreateFMul(a, t);
+      Value *res = builder->CreateFMul(m, at, "calc_p_mat");
+      printResult("Momento lineal", res, "N*m");
+      return res;
+    }
+    else if (!t && p && f) {
+      // t = p / f
+      Value *res = builder->CreateFDiv(p, f, "calc_t_pf");
+      printResult("Tiempo", res, "s");
+      return res;
+    }
+    else if (!t && p && m && a) {
+      // t = p / (m * a)
+      Value *ma = builder->CreateFMul(m, a);
+      Value *res = builder->CreateFDiv(p, ma, "calc_t_pma");
+      printResult("Tiempo", res, "s");
+      return res;
+    }
+    else if (!p && m && v) {
+      // p = m * v
+      Value *res = builder->CreateFMul(m, v, "calc_p_mv");
+      printResult("Momento lineal", res, "N*m");
+      return res;
+    }
+    else if (!m && p && v) {
+      // m = p / v
+      Value *res = builder->CreateFDiv(p, v, "calc_m_pv");
+      printResult("Masa", res, "kg");
+      return res;
+    }
+    else if (!v && p && m) {
+      // v = p / m
+      Value *res = builder->CreateFDiv(p, m, "calc_v_pm");
+      printResult("Velocidad", res, "m/s");
+      return res;
+    }
 
     // Returns en caso de variables insuficientes, aunque aún pued calcularse la incógnita
     if (f) return f;
@@ -864,9 +909,9 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
     if (w) return w;
     if (v) return v;
     if (t) return t;
-    if (m) return a;
-    if (p) return m;
-    if (a) return p;
+    if (m) return m;
+    if (p) return p;
+    if (a) return a;
 
     std::cerr << "Variables insuficientes para Trabajo Mecánico" << std::endl;
     return (Value *)nullptr;
