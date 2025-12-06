@@ -36,6 +36,7 @@ oper
   | 'flu' # operFluidos
   | 'mcu' # operMCU
   | 'em' # operEnergMec
+  | 'ele' # operElectro
   ;
 
 pars

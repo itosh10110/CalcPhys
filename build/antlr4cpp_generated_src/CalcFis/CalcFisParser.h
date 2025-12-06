@@ -13,10 +13,11 @@ class  CalcFisParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, ADD = 14, 
-    SUB = 15, MUL = 16, DIV = 17, POW = 18, MOD = 19, LOG = 20, ROOT = 21, 
-    LPAR = 22, RPAR = 23, COS = 24, SEN = 25, TG = 26, SEC = 27, CSC = 28, 
-    CTG = 29, PRINT = 30, ID = 31, INT = 32, FLOAT = 33, STRING = 34, WS = 35
+    T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, 
+    ADD = 15, SUB = 16, MUL = 17, DIV = 18, POW = 19, MOD = 20, LOG = 21, 
+    ROOT = 22, LPAR = 23, RPAR = 24, COS = 25, SEN = 26, TG = 27, SEC = 28, 
+    CSC = 29, CTG = 30, PRINT = 31, ID = 32, INT = 33, FLOAT = 34, STRING = 35, 
+    WS = 36
   };
 
   enum {
@@ -284,6 +285,14 @@ public:
   class  OperMCelesteContext : public OperContext {
   public:
     OperMCelesteContext(OperContext *ctx);
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  OperElectroContext : public OperContext {
+  public:
+    OperElectroContext(OperContext *ctx);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;

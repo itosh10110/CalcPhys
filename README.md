@@ -63,6 +63,7 @@ El objetivo principal del proyecto es diseñar e implementar un intérprete, usa
 - Desarrollar una gramática formal en ANTLR4 que defina la estructura de las expresiones y comandos del lenguaje.
 - Implementar un programa en Python que utilice el parser generado por ANTLR para leer un script, interpretar las operaciones y calcular los resultados solicitados, gestionando un entorno de variables.
 - Realizar pruebas funcionales que validen tanto las operaciones matemáticas como la correcta resolución de problemas de física usando las funciones predefinidas del lenguaje (`cl`, `mru`, `mruv`, `em`).
+- Plasmar los conocimientos comprendidos a lo largo del curso en un proyecto que supere las expectativas del maestro, los docentes, y dejar intacta la huella del trabajo.
 
 ---
 
@@ -76,15 +77,16 @@ El lenguaje **PhysiCode** es un lenguaje de scripting interpretado. Su sintaxis 
 - **Expresiones matemáticas:** Incluye `+`, `-`, `*`, `/`, `pot`, `r`, `log`, `%`.
 - **Funciones trigonométricas:** `cos()`, `sen()`, `tg()`, `sec()`, `csc()`, `ctg()`
 - **Funciones de física:** Incluyen MRU, MRUV, caída libre, energía mecánica, MAS, MCU, fluidos, mecánica celeste, etc.
+- **Prints e impresiones** Ejemplo: ppp("El valor de a es: " a) / ppp("Aprobaremos el curso?")
 
 ### Ejemplo de sintaxis
 
 ```c
 // Calcular velocidad final en MRUV
-velocidad_final = mruv(v0=10, a=2, t=5);
+velocidad_final = mruv(v0=10, a=2, t=5, vf=?);
 
 // Calcular la energía mecánica
-energia_total = em(m=2, v=3, h=10);
+energia_total = em(m=2, v=3, h=10, em=?);
 ```
 
 ---
@@ -207,7 +209,7 @@ Incluye:
 a = 5 + 6 / 3;
 b = (4 pot 5) + 1;
 v = 5;
-mru(d=160, v=v);
+mru(d=160, v=v, t =?);
 ```
 
 Salida esperada:
@@ -230,6 +232,11 @@ Tiempo recorrido: 32.0 s
 3. **Optimizador:** `InstCombine`, `Reassociate`, `GVN`, `CFGSimplification`
 4. **ORC JIT:** Ejecución directa del IR optimizado
 
+### Estructura del trabajo
+La carpeta CalcPhys contiene las subcarpetas src, build, cmake y ejemplos. src comprende los archivos CMakeLists.txt, Driver.h, Mian.cpp y CalcFis.g4, la gramática. CMakeLists.txt define qué fuentes se compilarán, integra rutas de archivos de configuración de CMake y LLVM, librerías de LLVM y la dirección de los archivos a compilar en la carpeta build. Permite construir el compilador automáticamente y portable con tan solo los comandos "cmake -S src -B build" y "cmake --build build".
+Driver.h es el motor matemático, la piedra angular y el corazón latiente delator debajo de las tarimas, invoca librerías de LLVM IR, Parser y BaseVisitor, hospedados en la subcaprtea build. Se contruyen el contexto (LLVMContext), módule (Module) y un mapa de valores para las variables. Se escriben operaciones que delimitan el funcionamiento del lenguaje nuevo (operaciones matemáticas y físicas), así como lógica para generar instrucciones con LLVM IR (builder).
+Main.cpp convoca a Driver.h, inicializa el compilador (contexto LLVM, módulo, IRBuilder), el Parser.h que interpreta la gramática (CalcFis) y convierte el código fuente en llamadas a las funciones esculpidas en Driver.h. Finalmente, emplea enclaves para la optimización del código en su salida como código IR deconstruido y la ejecución en JIT.
+
 ### Optimizaciones con LLVM
 
 - Eliminación de redundancia
@@ -245,7 +252,7 @@ Permite ejecutar funciones en memoria sin recompilar todo, acelerando cálculos 
 
 - `a = 5 + 6 / 3` → 7
 - `b = (4 pot 5) + 1` → 1025
-- `mru(d=160, v=5)` → 32.0 s
+- `mru(d=160, v=5, t=?)` → 32.0 s
 
 ---
 

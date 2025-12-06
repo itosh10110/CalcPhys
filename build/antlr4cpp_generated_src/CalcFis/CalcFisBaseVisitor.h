@@ -91,6 +91,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitOperElectro(CalcFisParser::OperElectroContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitParPar(CalcFisParser::ParParContext *ctx) override {
     return visitChildren(ctx);
   }

@@ -57,6 +57,8 @@ public:
 
     virtual std::any visitOperEnergMec(CalcFisParser::OperEnergMecContext *context) = 0;
 
+    virtual std::any visitOperElectro(CalcFisParser::OperElectroContext *context) = 0;
+
     virtual std::any visitParPar(CalcFisParser::ParParContext *context) = 0;
 
     virtual std::any visitDeclID(CalcFisParser::DeclIDContext *context) = 0;

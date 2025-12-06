@@ -125,7 +125,7 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
         Value *val = getVal(visit(exprCtx));
         if (val) {
           if (val->getType()->isDoubleTy()) {
-            Value *fmt = builder->CreateGlobalStringPtr("%f");
+            Value *fmt = builder->CreateGlobalStringPtr("%g");
             builder->CreateCall(printfFunc, {fmt, val});
           } else if (val->getType()->isIntegerTy()) {
             Value *fmt = builder->CreateGlobalStringPtr("%d");
@@ -573,6 +573,8 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       return operMCU(params);
     if (oper == "em")
       return operEnergMec(params);
+    if (oper == "ele")
+      return operElectro(params);
 
     return (Value *)nullptr;
   }
@@ -622,6 +624,11 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Tiempo recorrido", res, "s");
       return res;
     }
+
+    if (d) return d;
+    if (v) return v;
+    if (t) return t;
+
     std::cerr << "Variables insuficientes para MRU" << std::endl;
     return (Value *)nullptr;
   }
@@ -680,6 +687,12 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Tiempo", res, "s");
       return res;
     }
+
+    if (h) return h;
+    if (vi) return vi;
+    if (vf) return vf;
+    if (t) return t;
+
     std::cerr << "Variables insuficientes para caida libre" << std::endl;
     return (Value *)nullptr;
   }
@@ -752,6 +765,13 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Desplazamiento xf-x0", res, "m");
       return res;
     }
+
+    if (x0) return x0;
+    if (xf) return xf;
+    if (v0) return v0;
+    if (vf) return vf;
+    if (t) return t;
+    if (a) return a;
 
     std::cerr << "Variables insuficientes para MRUV" << std::endl;
     return (Value *)nullptr;
@@ -837,6 +857,17 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Trabajo (Ec)", res, "J");
       return res;
     }
+
+    // Returns en caso de variables insuficientes, aunque aún pued calcularse la incógnita
+    if (f) return f;
+    if (d) return d;
+    if (w) return w;
+    if (v) return v;
+    if (t) return t;
+    if (m) return a;
+    if (p) return m;
+    if (a) return p;
+
     std::cerr << "Variables insuficientes para Trabajo Mecánico" << std::endl;
     return (Value *)nullptr;
   }
@@ -937,6 +968,15 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Periodo orbital", res, "s");
       return res;
     }
+
+    // Returns para concatenar en caso no se encuentre solución inmediata
+    if (m1) return m1;
+    if (m2) return m2;
+    if (rad) return rad;
+    if (v) return v;
+    if (F) return F;
+    if (T) return T;
+
     std::cerr << "Variables insuficientes para Mecánica Celeste" << std::endl;
     return (Value *)nullptr;
   }
@@ -1066,6 +1106,23 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Energía mecánica", res, "J");
       return res;
     }
+
+    // Returns en caso de no encontrar solución
+    if (A) return A;
+    if (f) return f;
+    if (t) return t;
+    if (w) return w;
+    if (T) return T;
+    if (m) return m;
+    if (x) return x;
+    if (v) return v;
+    if (a) return a;
+    if (k) return k;
+    if (Ep) return Ep;
+    if (Ec) return Ec;
+    if (Em) return Em;
+    if (phi) return phi;
+
     std::cerr << "Variables insuficientes para MAS" << std::endl;
     return (Value *)nullptr;
   }
@@ -1113,6 +1170,16 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Fuerza de empuje", res, "N");
       return res;
     }
+
+    // Returns en caso de no encontrar solución
+    if (v) return v;
+    if (d) return d;
+    if (P) return P;
+    if (h) return h;
+    if (A) return A;
+    if (Q) return Q;
+    if (F) return F;
+
     std::cerr << "Variables insuficientes para Fluidos" << std::endl;
     return (Value *)nullptr;
   }
@@ -1174,6 +1241,17 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Velocidad tangencial", res, "m/s");
       return res;
     }
+
+    // Returns en caso de no encontrar solución
+    if (rad) return rad;
+    if (v) return v;
+    if (m) return m;
+    if (F) return F;
+    if (f) return f;
+    if (a) return a;
+    if (w) return w;
+    if (T) return T;
+
     std::cerr << "Variables insuficientes para MCU" << std::endl;
     return (Value *)nullptr;
   }
@@ -1244,7 +1322,197 @@ virtual std::any visitProg(CalcFisParser::ProgContext *ctx) override {
       printResult("Trabajo", res, "J");
       return res;
     }
+
+    // Returns en caso de no encontrar solución
+    if (h) return h;
+    if (v) return v;
+    if (m) return m;
+    if (a) return a;
+    if (w) return w;
+    if (p) return p;
+    if (F) return F;
+    if (Ec) return Ec;
+    if (Ep) return Ep;
+    if (Em) return Em;
+
     std::cerr << "Variables insuficientes para Energía Mecánica" << std::endl;
+    return (Value *)nullptr;
+  }
+
+  std::any operElectro(std::map<std::string, Value *> &pars) {
+    Value *q = pars["q"]; // Carga eléctrica
+    Value *q1 = pars["q"]; // Carga eléctrica uno
+    Value *q2 = pars["q2"]; // Segunda carga eléctrica
+    Value *V = pars["V"]; // Voltaje
+    Value *I = pars["I"]; // Corriente
+    Value *R = pars["R"]; // Resistencia
+    Value *P = pars["P"]; // Potencia
+    Value *t = pars["t"]; // Tiempo
+    Value *E = pars["E"]; // Energía eléctrica
+    Value *F = pars["F"]; // Fuerza eléctrica
+    Value *d = pars["d"]; // Distancia entre cargas
+    Value *k = ConstantFP::get(context, APFloat(8.9875517923e9)); // Constante de Coulomb
+
+    if (q)
+      q = castToDouble(q);
+    if (q1)
+      q1 = castToDouble(q1);
+    if (V)
+      V = castToDouble(V);
+    if (I)
+      I = castToDouble(I);
+    if (R)
+      R = castToDouble(R);
+    if (P)
+      P = castToDouble(P);
+    if (t)
+      t = castToDouble(t);
+    if (E)
+      E = castToDouble(E);
+    if (F)
+      F = castToDouble(F);
+    if (d)
+      d = castToDouble(d);
+    if (q2)
+      q2 = castToDouble(q2);
+    if (k)
+      k = castToDouble(k);
+
+    if (!E && q && V) {
+      // E = q * V
+      Value *res = builder->CreateFMul(q, V, "calc_E");
+      printResult("Energía eléctrica", res, "J");
+      return res;
+    }
+    else if (!V && I && R) {
+      // V = I * R
+      Value *res = builder->CreateFMul(I, R, "calc_V");
+      printResult("Voltaje", res, "V");
+      return res;
+    } 
+    else if (!I && V && R) {
+      // I = V / R
+      Value *res = builder->CreateFDiv(V, R, "calc_I");
+      printResult("Corriente", res, "A");
+      return res;
+    } 
+    else if (!R && V && I) {
+      // R = V / I
+      Value *res = builder->CreateFDiv(V, I, "calc_R");
+      printResult("Resistencia", res, "Ω");
+      return res;
+    } 
+    else if (!P && V && I) {
+      // P = V * I
+      Value *res = builder->CreateFMul(V, I, "calc_P");
+      printResult("Potencia", res, "W");
+      return res;
+    } 
+    else if (!V && P && I){
+      // V = P / I
+      Value *res = builder->CreateFDiv(P, I, "calc_V");
+      printResult("Voltaje", res, "V");
+      return res;
+    } 
+    else if (!I && P && V) {
+      // I = P / V
+      Value *res = builder->CreateFDiv(P, V, "calc_I");
+      printResult("Corriente", res, "A");
+      return res;
+    } 
+    else if (!E && P && t){
+      // E = P * t
+      Value *res = builder->CreateFMul(P, t, "calc_E");
+      printResult("Energía eléctrica", res, "J");
+      return res;
+    }
+    else if (!P && E && t) {
+      // P = E / t
+      Value *res = builder->CreateFDiv(E, t, "calc_P");
+      printResult("Potencia", res, "W");
+      return res;
+    }
+    else if (!t && E && P) {
+      // t = E / P
+      Value *res = builder->CreateFDiv(E, P, "calc_t");
+      printResult("Tiempo", res, "s");
+      return res;
+    }
+    else if (!F && k && q1 && q2 && d) {
+      // F = k * |q1 * q2| / d^2
+      Value *num = builder->CreateFMul(k, builder->CreateFMul(q1, q2));
+      Value *den = builder->CreateFMul(d, d);
+      Value *res = builder->CreateFDiv(num, den, "calc_F");
+      printResult("Fuerza eléctrica", res, "N");
+      return res;
+    }
+    else if (!d && k && q1 && q2 && F) {
+      // d = sqrt(k * |q1 * q2| / F)
+      Value *num = builder->CreateFMul(k, builder->CreateFMul(q1, q2));
+      Value *frac = builder->CreateFDiv(num, F);
+      Function *sqrtFunc = Intrinsic::getOrInsertDeclaration(
+          module.get(), Intrinsic::sqrt, {Type::getDoubleTy(context)});
+      Value *res = builder->CreateCall(sqrtFunc, {frac}, "calc_d");
+      printResult("Distancia entre cargas", res, "m");
+      return res;
+    }
+    else if (!q1 && k && q2 && F && d) {
+      // q1 = F * d^2 / (k * |q2|)
+      Value *d2 = builder->CreateFMul(d, d);
+      Value *num = builder->CreateFMul(F, d2);
+      Value *den = builder->CreateFMul(k, q2);
+      Value *res = builder->CreateFDiv(num, den, "calc_q1");
+      printResult("Carga eléctrica q1", res, "C");
+      return res;
+    }
+    else if (!q2 && k && q1 && F && d) {
+      // q2 = F * d^2 / (k * |q1|)
+      Value *d2 = builder->CreateFMul(d, d);
+      Value *num = builder->CreateFMul(F, d2);
+      Value *den = builder->CreateFMul(k, q1);
+      Value *res = builder->CreateFDiv(num, den, "calc_q2");
+      printResult("Carga eléctrica q2", res, "C");
+      return res;
+    }
+    else if (!q && I && t) {
+      // q = I * t
+      Value *res = builder->CreateFMul(I, t, "calc_q");
+      printResult("Carga eléctrica", res, "C");
+      return res;
+    }
+    else if (!q && I && t) {
+      // q = I * t
+      Value *res = builder->CreateFMul(I, t, "calc_q");
+      printResult("Carga eléctrica", res, "C");
+      return res;
+    }
+    else if (!V && E && q) {
+      // V = E / q
+      Value *res = builder->CreateFDiv(E, q, "calc_V");
+      printResult("Voltaje", res, "V");
+      return res;
+    } 
+    else if (!q && E && V) {
+      // q = E / V
+      Value *res = builder->CreateFDiv(E, V, "calc_q");
+      printResult("Carga eléctrica", res, "C");
+      return res;
+    }
+
+    // Returns para concatenar más operaciones eléctricas si es necesario
+    if (E) return E;
+    if (V) return V;
+    if (I) return I;
+    if (R) return R;
+    if (P) return P;
+    if (t) return t;
+    if (F) return F;
+    if (d) return d;
+    if (q1) return q1;
+    if (q2) return q2;
+    if (q) return q;
+
+    std::cerr << "Variables insuficientes para Electromagnetismo" << std::endl;
     return (Value *)nullptr;
   }
 
